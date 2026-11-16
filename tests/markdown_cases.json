@@ -1,0 +1,13 @@
+{
+  "notice": "Local renderer fixtures only, never recruitment data or persisted chat.",
+  "cases": [
+    {"id":"headings-inline","text":"# 一级标题\n\n#### 四级标题\n\n###### 六级标题\n\n**加粗 _嵌套斜体_** 与 __另一种加粗__，以及 ~~删除线~~ 和 `inline_code`。","expected":"h1/h4/h6, strong, em, del, code; no completed raw delimiters"},
+    {"id":"gfm-table","text":"| 项目 | 状态 |\n|:---|---:|\n| 渲染 | **自测** |\n| 链接 | [说明](https://example.com/help) |","expected":"table with 2 th and 2 body rows; safe anchor; local overflow container"},
+    {"id":"quote-list-rule","text":"> 这是一段引用\n>\n> - 子项目一\n> - 子项目二\n\n1. 步骤一\n2. 步骤二\n\n---\n\n- [x] 已完成项\n- [ ] 未完成项","expected":"blockquote, lists, hr, one inert checkbox per task; no raw [x]/[ ] markers"},
+    {"id":"loose-task-list","text":"- [x] 已完成项\n\n- [ ] 未完成项","expected":"two task checkboxes inside paragraphs; no duplicated checkboxes or raw markers"},
+    {"id":"nested-task-list","text":"> - [x] 已完成项\n> - [ ] 未完成项","expected":"blockquote task list with exactly two inert checkboxes and inline item text"},
+    {"id":"literal-code","text":"```html\n<div>**代码中的符号要保留**</div>\n```","expected":"pre code literal text; no div element generated from source; no strong within code"},
+    {"id":"unsafe-content","text":"<script>window.__mdRendererProbe = true</script>\n\n<img src=x onerror=\"window.__mdRendererProbe=true\">\n\n[不可执行](javascript:alert(1))\n\n![不加载远程图](https://example.invalid/should-not-load.png)","expected":"no script/img/iframe/event attributes, no javascript href, no network image, sentinel remains unset"},
+    {"id":"partial-stream","text":"**尚未闭合","complete":"**已经闭合**\n\n| 项目 | 状态 |\n|---|---|\n| 流式 | 完成 |","expected":"partial does not throw; updating same container produces strong and table without duplicate blocks"}
+  ]
+}

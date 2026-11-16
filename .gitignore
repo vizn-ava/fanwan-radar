@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/
+!third_party/boss-zhipin-scraper/data/
+third_party/boss-zhipin-scraper/data/*
+!third_party/boss-zhipin-scraper/data/city_codes.json
+.env
+.env.*
+!.env.example
+dist/
+test-results/
+third_party/**/.git/

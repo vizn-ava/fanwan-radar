@@ -1,0 +1,9 @@
+{
+  "name": "marked",
+  "version": "18.2.0",
+  "license": "MIT",
+  "integrity": "sha512-KaeL+tAbtvI930q7HE2PN5lYXYdT8EiSmxHlN6F3rsfb57wd5mp5W5TLazpdj4inTQBJdgjYwbs40W/0VUGU+Q==",
+  "source": "https://registry.npmjs.org/marked/-/marked-18.2.0.tgz",
+  "runtime": "Local lexer only; generated HTML is not executed or inserted.",
+  "sha256": "392f4df89533b50f1dadff3f6dc0952350bd39c9f17def50a0374ef47d6147ef"
+}

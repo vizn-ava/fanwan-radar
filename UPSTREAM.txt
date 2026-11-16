@@ -1,0 +1,3 @@
+https://github.com/eatmoreduck/boss-zhipin-scraper
+Commit: 7913419b6b53e45ee621da7dab066a350ef7b060
+License: MIT

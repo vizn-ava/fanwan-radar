@@ -1,0 +1,4 @@
+# Preserve the official artifact bytes used by the integrity regression test.
+app/static/vendor/marked/marked.umd.js -text
+app/static/vendor/marked/marked.umd.js.map -text
+app/static/vendor/marked/LICENSE -text

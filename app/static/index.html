@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#252721">
+  <title>饭碗雷达 · 求职工作台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/vendor/marked/marked.umd.js" defer></script>
+  <script src="/static/markdown.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body data-app-build="__BUILD_ID__">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="饭碗雷达首页"><span class="brand-icon" aria-hidden="true">◉</span><span>饭碗雷达 <b class="version">V1</b><small>本地求职工作台 · 东门黄犬</small></span></a>
+    <div class="header-right"><span id="header-model-state" class="model-indicator" role="status">读取配置…</span><button id="open-model" class="button secondary" type="button">模型设置</button><button id="open-first-try" class="button secondary" type="button">First Try · 上手</button><button id="open-setup" class="text-button" type="button">帮助</button><button id="delete-data" class="text-button danger" type="button">清除数据</button></div>
+  </header>
+  <main>
+    <section id="update-banner" class="update-banner" role="status" aria-live="polite" hidden><div><strong>发现新版本</strong><p>请先保存草稿，再刷新。</p></div><button id="reload-update" class="button secondary" type="button">刷新</button></section>
+    <div id="global-status" class="global-status" role="status" aria-live="polite" hidden></div>
+    <details id="setup-guide" class="setup-drawer"><summary>连接帮助 <span id="setup-summary">按需展开</span></summary><div class="setup-guide">
+      <div><strong>配置模型</strong><p id="setup-model-state">读取配置…</p><button id="setup-model" type="button" class="button secondary">模型设置</button></div>
+      <div><strong>本人登录 BOSS</strong><p id="setup-browser-state">请在专用窗口登录。已连接不等于已登录。</p><button id="open-boss-browser" type="button" class="button secondary">打开登录窗口</button> <button id="refresh-sources" type="button" class="text-button">刷新状态</button></div>
+      <div><strong>保存 → 查询 → 分析</strong><p>缺失或矛盾的信息保留为待确认。校招平台主要面向高校及毕业生。</p></div>
+    </div></details>
+    <div class="workspace">
+      <aside class="panel profile-panel">
+        <div class="panel-heading"><div><span class="step">01 / 条件</span><h2>说说你的要求</h2></div></div>
+        <form id="profile-intake-form" class="profile-intake">
+          <label for="profile-intake-text"><span class="intake-entry-title">一句话填条件</span></label>
+          <textarea id="profile-intake-text" rows="5" maxlength="20000" required aria-describedby="intake-privacy" placeholder="例如：郑州客服，月薪6000起，双休、五险一金，不上夜班。"></textarea>
+          <div class="intake-tools"><button id="apply-example" type="button" class="text-button">试用示例</button><small id="intake-length">0 / 20000 字</small></div>
+          <p id="intake-privacy" class="field-help">内容发给所选模型，核对后手动保存。</p>
+          <div class="intake-actions"><button id="interpret-profile" class="button primary" type="submit">帮我整理要求</button><button id="cancel-interpret" class="button secondary" type="button" hidden>取消整理</button></div>
+          <p id="intake-status" class="field-help" role="status" aria-live="polite"></p>
+        </form>
+        <section id="intake-preview" class="intake-preview" aria-labelledby="intake-preview-title" hidden>
+          <div class="intake-preview-heading"><h3 id="intake-preview-title">核对条件</h3><span id="intake-preview-state" class="small-pill">尚未保存</span></div>
+          <p id="intake-summary" class="field-help" hidden></p>
+          <p id="intake-stale" class="notice" role="status" hidden></p>
+          <div id="intake-changes" class="intake-changes" aria-label="可确认的条件变化"></div>
+          <div id="intake-questions" class="intake-questions"></div>
+          <div class="intake-actions"><button id="apply-intake" class="button primary" type="button">确认填入条件</button><button id="discard-intake" class="text-button" type="button">放弃此预览</button></div>
+          <p class="field-help">勾选后填入，再点「保存条件」。</p>
+        </section>
+        <details id="profile-editor" class="profile-editor"><summary><strong>手动微调</strong><span id="profile-summary">读取条件…</span><span class="edit-hint">展开</span></summary>
+        <form id="profile-form">
+          <p class="field-help">空白不限，多项用逗号分隔。</p>
+          <div id="profile-common"></div>
+          <details class="advanced-profile"><summary>个人背景</summary><div id="profile-background"></div></details>
+          <details class="advanced-profile"><summary>更多条件</summary><div id="profile-advanced"></div></details>
+          <details class="advanced-profile"><summary>必须 / 偏好 / 忽略</summary><p class="field-help">未设置或待确认的条件不作硬筛选。</p><div id="profile-priorities"></div></details>
+          <label>补充说明<textarea name="notes" rows="2" maxlength="8000" placeholder="其他需要说明的情况"></textarea></label>
+          <div id="profile-conflict" class="notice" hidden><p>画像版本已变化。你的编辑仍保留，请先查看当前版本，再决定如何处理。</p><button id="reload-profile" type="button" class="button secondary">读取当前版本并对照</button><div id="conflict-preview"></div><button id="use-current-profile" type="button" class="text-button" hidden>放弃本页编辑，使用当前版本</button></div>
+        </form>
+        </details>
+        <div class="profile-save"><button id="save-profile" class="button primary full" type="submit" form="profile-form">保存条件</button><p id="profile-status" class="field-help" role="status">查询和分析使用已保存条件。</p><p id="profile-stream-help" class="field-help" hidden>分析中可编辑草稿，结束后再保存。</p></div>
+      </aside>
+      <section class="panel jobs-panel">
+        <div class="panel-heading"><div><span class="step">02 / 岗位</span><h2>看看有哪些机会</h2></div><button id="open-import" class="text-button">导入职位</button></div>
+        <form id="search-form"><fieldset id="source-options" class="source-options"><legend>来源 · 可多选</legend></fieldset><details id="unavailable-sources" class="source-unavailable" hidden><summary>更多来源（未接通）</summary><div id="unavailable-options" class="source-options"></div></details><div id="source-state" class="source-state" role="status">检测来源…</div><div class="search-row"><label class="visually-hidden" for="keyword">岗位搜索关键词</label><input id="keyword" placeholder="补充关键词（可选）"><button id="search-button" class="button primary" type="submit">查岗位</button></div><div class="search-aux"><button id="preview-plan" type="button" class="text-button">检索范围</button><span>列表信息 ≠ 完整原文</span></div></form>
+        <section id="plan-wrap" class="plan-wrap" hidden aria-label="检索计划"><p id="plan-summary"></p><details><summary>查看平台查询与后置筛选明细</summary><div id="plan-content"></div></details></section>
+        <section id="task-panel" class="task-panel" aria-label="本次采集进度" hidden><div class="task-heading"><strong id="task-status" role="status"></strong><button id="cancel-task" type="button" class="button secondary">取消采集</button><button id="resume-task" type="button" class="button secondary" hidden>恢复读取进度</button></div><progress id="task-progress" max="100" aria-label="采集进度"></progress><div id="task-sources"></div></section>
+        <div id="search-warning" class="notice" role="status" hidden></div>
+        <div class="results-heading"><div><strong id="results-total">读取岗位…</strong><small id="results-meta">保存条件后查询。</small></div><span class="ranking-label" title="排序分不是录用概率">仅供排序</span></div>
+        <div class="filters" role="group" aria-label="按匹配结论筛选"><button class="active" data-filter="all" aria-pressed="true">全部 <span>0</span></button><button data-filter="match" aria-pressed="false">较匹配 <span>0</span></button><button data-filter="needs_confirmation" aria-pressed="false">待确认 <span>0</span></button><button data-filter="mismatch" aria-pressed="false">不匹配 <span>0</span></button></div>
+        <p class="verdict-help">待确认：信息缺失或有矛盾。</p>
+        <div id="jobs-list" class="jobs-list" aria-live="polite"></div>
+        <details id="previous-wrap" class="previous-results" hidden><summary>上次保存的结果 · 不属于本次采集</summary><div id="previous-jobs" class="jobs-list"></div></details>
+      </section>
+      <section id="analysis-panel" class="panel chat-panel" aria-labelledby="analysis-title">
+        <div class="panel-heading"><div><span class="step">03 / 分析</span><h2 id="analysis-title">这份工作适合我吗？</h2></div><span class="small-pill">流式</span></div>
+        <div class="assistant-info"><span class="assistant-avatar" aria-hidden="true">雷</span><div><strong>饭碗助手</strong><small id="assistant-mode">正在连接本地服务…</small></div></div>
+        <div class="analysis-context"><p id="selection-status" class="field-help" role="status">选岗位再聊。</p><div id="selected-jobs" class="selected-jobs" aria-label="已选分析职位"></div><div class="analysis-actions"><button id="clear-selection" type="button" class="text-button">清空</button><button id="analyze-current" type="button" class="button secondary">分析现状</button><button id="compare-jobs" type="button" class="button secondary">比较所选</button></div></div>
+        <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions text" aria-label="现状与职位分析对话"></div>
+        <div id="chat-suggestions" class="suggestions"><button type="button">哪份更适合我？</button><button type="button">该问招聘方什么？</button></div>
+        <form id="chat-form" class="chat-compose"><label for="chat-input" class="visually-hidden">提问现状与已有职位</label><textarea id="chat-input" rows="3" placeholder="问问岗位匹配、取舍或待确认问题…" required maxlength="8000"></textarea><div class="compose-bottom"><small>Enter 发送 · Shift + Enter 换行</small><button id="send-chat" class="button primary" type="submit">发送 ↑</button></div></form>
+        <div class="stream-controls"><button id="stop-chat" type="button" class="button secondary" hidden>停止生成</button><button id="retry-chat" type="button" class="button secondary" hidden>重试本次分析</button><button id="discard-chat" type="button" class="text-button" hidden>结束本次尝试，另提问题</button></div>
+        <p id="chat-status" class="field-help" role="status"></p>
+        <p id="markdown-status" class="field-help" role="status" hidden>本地排版组件未载入，回复暂按原文显示。请检查页面版本并刷新后再试。</p>
+        <p class="chat-footnote">只分析，不改条件或投递；待遇仍需核实。</p>
+      </section>
+    </div>
+    <footer class="page-footer"><span>饭碗雷达 / 东门黄犬</span><span>采集基于 <a href="https://github.com/eatmoreduck/boss-zhipin-scraper" target="_blank" rel="noopener noreferrer">boss-zhipin-scraper（MIT）</a></span><span>本地运行 · 手动投递</span></footer>
+  </main>
+  <dialog id="first-try-dialog" class="first-try-dialog" aria-labelledby="first-try-title" aria-describedby="first-try-intro">
+    <div class="dialog-heading"><div><p class="eyebrow">FIRST TRY</p><h2 id="first-try-title">3 步上手</h2></div><button id="first-try-close" class="icon-button" type="button" aria-label="关闭使用指南">×</button></div>
+    <p id="first-try-intro" class="muted">本机使用，无需注册。</p>
+    <ol class="first-try-steps" aria-label="三步使用流程">
+      <li><span class="guide-number" aria-hidden="true">01</span><div><h3>连接模型与 BOSS</h3><p id="first-try-model-state">读取模型配置…</p><p>BOSS 需本人登录，<strong>已连接不等于已登录</strong>。</p><div class="guide-inline-actions"><button id="first-try-model" class="text-button" type="button">模型设置</button><button id="first-try-connections" class="text-button" type="button">登录说明</button></div></div></li>
+      <li><span class="guide-number" aria-hidden="true">02</span><div><h3>写要求，存条件</h3><p>写一段话 → 整理 → 确认填入 → 保存。</p></div></li>
+      <li><span class="guide-number" aria-hidden="true">03</span><div><h3>查岗位，选中分析</h3><p>最多比较 5 份。信息不清楚，就向招聘方核实。</p></div></li>
+    </ol>
+    <p id="first-try-step-status" class="field-help" role="status">指南不改资料，也不发起查询。</p>
+    <div class="first-try-footer"><button id="first-try-example" class="button secondary" type="button">试用示例</button><button id="first-try-start" class="button primary" type="button" autofocus>开始填写</button></div>
+    <p class="field-help">示例不覆盖草稿，不自动保存或投递。</p>
+  </dialog>
+  <dialog id="import-dialog" aria-label="导入你收集的真实职位"><div class="dialog-heading"><div><p class="eyebrow">BRING YOUR OWN JOBS</p><h2>导入你收集的真实职位</h2></div><button type="button" class="close-dialog icon-button" aria-label="关闭">×</button></div><p class="muted">粘贴包含 jobs 数组的真实 JD JSON，保留原始来源链接。结果标记为「用户提供 · 未核验」，不会作为平台已验证信息。</p><form id="import-form"><label>选择 JSON 文件<input id="import-file" type="file" accept=".json,application/json"></label><label for="import-json">或粘贴 JSON</label><textarea id="import-json" rows="9" spellcheck="false" placeholder="粘贴你收集的真实职位 JSON"></textarea><label class="checkbox-label"><input id="import-confirm" type="checkbox" required>我确认导入真实职位，并理解其内容尚未核验</label><p id="import-status" role="status" class="field-help"></p><button id="import-submit" class="button primary full" type="submit">导入并分析</button></form></dialog>
+  <dialog id="model-dialog" aria-label="模型连接设置">
+    <div class="dialog-heading"><div><h2>模型设置</h2></div><button type="button" class="close-dialog icon-button" aria-label="关闭">×</button></div>
+    <p class="muted">必要画像、对话和岗位会发给所选模型；Key 仅在本机保护。</p>
+    <form id="model-form">
+      <label>Base URL<input id="model-base-url" type="url" required placeholder="模型服务的兼容 API 地址" autocomplete="off"></label>
+      <label>API Key<input id="model-key" type="password" autocomplete="new-password" placeholder="留空保留已保存的 Key" spellcheck="false"></label>
+      <label>模型名称<input id="model-name" list="model-options" autocomplete="off" placeholder="可以先读取服务支持的模型，也可手动填写"></label><datalist id="model-options"></datalist>
+      <button id="discover-models" type="button" class="button secondary">读取可用模型</button>
+      <p id="model-storage" class="field-help"></p>
+      <div class="dialog-actions"><button id="remove-model-key" type="button" class="text-button danger">移除已保存的 Key</button><button id="test-model" type="button" class="button secondary">测试已保存连接</button><button id="save-model" type="submit" class="button primary">保存设置</button></div>
+      <p id="model-status" role="status" class="field-help"></p>
+    </form>
+  </dialog>
+  <dialog id="application-dialog" aria-label="准备岗位沟通草稿"><div class="dialog-heading"><div><p class="eyebrow">A GOOD CONVERSATION STARTS HERE</p><h2>准备好，再开口。</h2></div><button type="button" class="close-dialog icon-button" aria-label="关闭">×</button></div><div id="application-content"></div></dialog>
+  <dialog id="delete-dialog" aria-label="确认清除本地求职数据"><h2>清除本地求职数据？</h2><p class="muted">将删除已保存的画像、简历文本、聊天记录和职位结果，并使进行中的旧任务失效。此操作无法撤销。模型设置和 Key 保留，可在模型设置中单独移除。</p><div class="dialog-actions"><button type="button" class="button secondary close-dialog">保留数据</button><button id="confirm-delete" type="button" class="button destructive">确认清除</button></div><p id="delete-status" role="status"></p></dialog>
+</body>
+</html>
